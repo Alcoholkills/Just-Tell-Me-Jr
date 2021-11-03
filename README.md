@@ -9,3 +9,11 @@ We need a :
 - Graphical interface
 - Save module
 - Logical backend
+
+### TODO
+
+I need to write the graphical interface, that's gonna have 3 windows:
+
+- The first one, main one, shows the button to display an activity
+- The second one shows a form to add a new entry, add a SubActivity, or remove an entry
+- The third one shows a menu to modify the probabilities of the entries
