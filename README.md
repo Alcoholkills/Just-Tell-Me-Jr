@@ -12,6 +12,8 @@ We need a :
 
 ### TODO
 
+UNIT TEST BABY & WRITE DOC
+
 I need to write the graphical interface, that's gonna have 3 windows:
 
 - The first one, main one, shows the button to display an activity
