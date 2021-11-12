@@ -1,5 +1,3 @@
-s = set()
-
 def str_card(card, num_tab: int) -> str:
     tab = "\t" * num_tab
     tab_minus_one = "\t" * (num_tab - 1)
@@ -10,7 +8,7 @@ def str_card(card, num_tab: int) -> str:
             str_return += str_card(sub_card, num_tab + 1)
     else :
         str_return = "[]"
-    return f"[\n{tab}{card.Name}\n{tab}{card.Hash}\n{tab}{card.Probability}\n{tab}{str_return}\n{tab}{card.Notes}\n{tab_minus_one}]"
+    return f"{tab_minus_one}" + "{"+ f"\n{tab}{card.Name}\n{tab}{card.Hash}\n{tab}{card.Probability}\n{tab}{str_return}\n{tab}{card.Notes}\n{tab_minus_one}" + "}\n"
 
 def rep_card(card, num_tab: int) -> str:
     tab = "\t" * num_tab
@@ -41,7 +39,6 @@ def dico_card(card) -> dict:
 
 def find_all_hash(card) -> list:
     l = [card.get_hash()]
-    l
     if card.get_subActivities() != list():
         for sub_card in card.get_subActivities():
             l += find_all_hash(sub_card)
@@ -54,8 +51,8 @@ def explore_and_delete(parent_card, card, hash_to_delete):
     for sub_card in card.get_subActivities():
         explore_and_delete(card, sub_card, hash_to_delete)
 
-def explore_and_add(parent_card, new_card, parent_hash_):
-    s.add((parent_card.get_hash(), parent_hash_))
+# TODO oula gros doute sur le elif ...
+def explore_and_add(parent_card, new_card, parent_hash_) -> None:
     if parent_card.get_hash() == parent_hash_:
         parent_card.add_subActivities(new_card)
         return
@@ -68,12 +65,14 @@ class Card():
                  name: str = "name",
                  hash_: int = 0,
                  probability: float = 0,
-                 subActivities: list = [],
+                 subActivities: list = None,
                  notes: str = "notes") -> None:
         self.Name: str = name
         self.Hash: int = hash_
         self.Probability: float = probability
-        self.SubActivities: list[Card] = subActivities
+        if subActivities is None:
+            subActivities = []
+        self.SubActivities = subActivities
         self.Notes: str = notes
     
     def __str__(self) -> str:
@@ -89,6 +88,9 @@ class Card():
     def __dict__(self) -> dict:
         return dico_card(self)
 
+    def __eq__(self, card) -> bool:
+        return self.get_hash() == card.get_hash()
+    
     def get_name(self):
         return self.Name
     
@@ -116,28 +118,33 @@ class Card():
     def add_subActivities(self, card):
         self.SubActivities.append(card)
     
-    def add_a_subActivities(self, new_card, parent_card_hash):
+    def add_a_subActivities(self, new_card, parent_card_hash) -> bool:
         if parent_card_hash in find_all_hash(self):
             if self.get_hash() == parent_card_hash:
                 self.add_subActivities(new_card)
-                return
+                return True
             else:
                 for sub_card in self.get_subActivities():
                     explore_and_add(sub_card, new_card, parent_card_hash)
+        return False
     
     def remove_subActivities(self, card):
         self.SubActivities.remove(card)
     
-    def remove_a_subActivities(self, card):
+    # TODO
+    # Il faut corriger cette fonction
+    # Soit on veut delete une subActivity, soit un veux delete un card
+    def remove_a_subActivities(self, card) -> bool:
         card_to_remove_hash = card.get_hash()
         if card_to_remove_hash in find_all_hash(self):
             if self.get_hash() == card_to_remove_hash:
                 del self
-                return
+                return True
             for sub_card in self.get_subActivities():
                 explore_and_delete(self, sub_card, card_to_remove_hash)
-        else:
-            print("Error in remove_subActivities")
+            return True
+        return False
+            
         
     def get_notes(self):
         return self.Notes
@@ -146,24 +153,24 @@ class Card():
         self.Notes = notes
     
 if __name__ == "__main__":
-    b = Card(name="b")
-    c = Card(name="c")
-    d = Card(name="d",subActivities=[c,b])
-    # print(c)
-    print(d)
-    c = Card(name="c", subActivities=[b])
-    d = Card(name="d", subActivities=[c])
-    print(d)
-    print(rep_card(d, 1))
-    print(dico_card(b))
-    print(dico_card(d))
-    b = Card(name="b",hash_=-33)
-    c = Card(name="c",hash_=4532)
-    d = Card(name="d",hash_=1,subActivities=[c,b])
-    # print(find_all_hash(d))
-    d.remove_subActivities(b)
-    print("'-'-"*5)
-    print(d)
+    # b = Card(name="b")
+    # c = Card(name="c")
+    # d = Card(name="d",subActivities=[c,b])
+    # # print(c)
+    # print(d)
+    # c = Card(name="c", subActivities=[b])
+    # d = Card(name="d", subActivities=[c])
+    # print(d)
+    # print(rep_card(d, 1))
+    # print(dico_card(b))
+    # print(dico_card(d))
+    # b = Card(name="b",hash_=-33)
+    # c = Card(name="c",hash_=4532)
+    # d = Card(name="d",hash_=1,subActivities=[c,b])
+    # # print(find_all_hash(d))
+    # d.remove_subActivities(b)
+    # print("'-'-"*5)
+    # print(d)
     """
     Ne fonctionne pas
     d.remove_subActivities(d)
@@ -174,5 +181,8 @@ if __name__ == "__main__":
     d = Card(name="d",hash_=1)
     print(d)
     print("'-'-"*5)
-    d.add_a_subActivities(c, d.get_hash())
+    d.add_a_subActivities(c, 1)
     print(c)
+    print(d)
+    print(d.__dict__())
+    print(c.add_a_subActivities(b,0))
