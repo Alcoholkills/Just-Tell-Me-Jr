@@ -15,6 +15,7 @@ Make it accessible with cli
 - [ ] Find an intresting way to link between the recursive aspect
   - An intresting way of doing is saying that in a deck, cards can change depending on other deck.
   ![deck_card_deck relation](deck%20and%20card%20relation.jpg)
+- [ ] Look at poetry
 
 # Old Part
 
