@@ -1,9 +1,9 @@
 [[Test]]
-Hash=1729879625750448733
+Hash=1344235579252398153
 Size=1
 [Deck]
-"{'Name':'Manger','Hash': 5782770964829007598,'Message':'Il faut manger','Proba':5.0}"
+{"Name": "Manger", "Hash": -3343403337213660450, "Message": "Manger c'est important", "Proba": 5.0}
 [DrawingDeck]
-"{'Name':'Manger','Hash':5782770964829007598,'Message':'Il faut manger','Proba':5.0}"
+{"Name": "Manger", "Hash": -3343403337213660450, "Message": "Manger c'est important", "Proba": 5.0}
 [isParent]
 [isChild]

@@ -1,6 +1,8 @@
+import json
 import random
 from numpy import cumsum
 from util import formatedString
+from jsonEncoderCard import CardEncoder
 from card import Card
 
 
@@ -92,16 +94,16 @@ class Deck:
         sizz = f"Size={self.size}\n"
         decc = "[Deck]\n"
         for crd in self.deck:
-            decc += '"' + str(crd.__repr__()) + '"\n'
+            decc += json.dumps(crd, cls=CardEncoder) + '\n'
         drww = "[DrawingDeck]\n"
         for crd in self.drawingDeck:
-            drww += '"' + str(crd.__repr__()) + '"\n'
+            drww += json.dumps(crd, cls=CardEncoder) + '\n'
         isPr = "[isParent]\n"
         for crd in self.isParent:
-            isPr += '"' + str(crd.__repr__()) + '"\n'
+            isPr += json.dumps(crd, cls=CardEncoder) + '\n'
         isCh = "[isChild]\n"
         for crd in self.isChild:
-            isCh += '"' + str(crd.__repr__()) + '"\n'
+            isCh += json.dumps(crd, cls=CardEncoder) + '\n'
         return namm + hass + sizz + decc + drww + isPr + isCh
         
         

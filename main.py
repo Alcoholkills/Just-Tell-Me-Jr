@@ -101,6 +101,8 @@ def loadDecks() -> list[Deck]:
             line = file.readline()
             if not line:
                 # TODO Cleanup this shit
+                if not leverChild:
+                    break
                 leverChild = False
                 tempDeck = Deck(namm)
                 tempDeck.setDeck(
@@ -215,9 +217,7 @@ def loadDecks() -> list[Deck]:
                 returnedDeckList.append(tempDeck)
                 continue
             if leverDeck:
-                temp = line[:-1]
-                temp2 = json.loads(temp)
-                tempDeckList.append(json.loads(temp))
+                tempDeckList.append(json.loads(line[:-1]))
                 continue
             if leverDraw:
                 drawList.append(json.loads(line[:-1]))
@@ -312,7 +312,7 @@ def main():
             i = -1
         if i not in range(0, len(array)):
             print(f"Please enter a valid {word} option.")
-            selection(array, word, False)
+            return selection(array, word, False)
         return i
 
     def deckState(deckList: list[Deck], hashDeckList: list[int]):
