@@ -1,4 +1,6 @@
 import random
+from numpy import cumsum
+from util import formatedString
 from card import Card
 
 
@@ -8,6 +10,7 @@ class Deck:
         self.hash: int = hash(name)
         self.size: int = 0
         self.deck: list[Card] = list()
+        self.drawingDeck: list[Card] = list()
         self.isParent: bool = False
         self.isChild: bool = False
 
@@ -39,14 +42,59 @@ class Deck:
 
     def viewCards(self) -> None:
         """`viewCards` prints to the stdout all the cards"""
-        # TODO
-        pass
+        for card in self.deck:
+            print(card)
 
     def draw(self) -> Card:
-        return random.choice(self.deck)
+        """Draws a card from the deck"""
+        if not self.drawingDeck:
+            self.drawingDeck = self.deck[:]
+        tempList: list[float] = [c.proba for c in self.drawingDeck]
+        bggst: int = sum(tempList)
+        cumList = list(map(lambda x: x/bggst, list(cumsum([0.0] + tempList))))
+        tirage = random.random()
+        for i in range(len(cumList) - 1):
+            if cumList[i] <= tirage and tirage < cumList[i+1]:
+                return self.drawingDeck.pop(i)
+        return self.drawingDeck.pop()
+    
+    def __str__(self):
+        temp: str = ""
+        namm: str = formatedString(self.name, "| *")
+        sizz: str = formatedString(f"Size: {self.size}", "| |")
+        parr: str = formatedString(f"Parent: {self.isParent}", "| |")
+        chld: str = formatedString(f"Child: {self.isChild}", "| |")
+        temp += "  +-------------------------+\n"
+        temp += " /                         /|\n"
+        temp += "+-------------------------+ |\n"
+        temp += "|                         | |\n"
+        temp += "{:^25}".format(namm)
+        temp += "|                         |/|\n"
+        temp += "*---*                 *---* |\n"
+        temp += "|    \_______________/    | |\n"
+        temp += "|                         | |\n"
+        temp += f"{sizz:^25}"
+        temp += f"{parr:^25}"
+        temp += f"{chld:^25}"
+        temp += "|                         | +\n"
+        temp += "|                         |/\n"
+        temp += "+-------------------------+\n"
+        return temp
 
 
 if __name__ == "__main__":
     d = Deck("Fire")
     print(d.name)
     print(d.size)
+    c1 = Card("Domir", "La il commence a etre vraiment tard")
+    c2 = Card("Jouer a SkullGirls", "Mais c'est vrai que t'as pas joue aujourd'hui")
+    c3 = Card("Faire du sport", "C'est OK ;)")
+    d.addCard(c1)
+    d.addCard(c2)
+    d.addCard(c3)
+    d.viewCards()
+    print(d)
+    print(d.draw())
+    print(d.draw())
+    print(d.draw())
+    print(d.draw())
