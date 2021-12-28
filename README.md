@@ -12,6 +12,8 @@ Make it accessible with cli
 - [x] Being able to create decks
 - [x] Being able to create cards
 - [ ] Being able to generate a deck from the terminal
+- [ ] If there is one deck, auto select the deck
+- [ ] Modify card percentage when shown in View Cards and View Minimalist Cards
 - [ ] Find an intresting way to link between the recursive aspect
   - An intresting way of doing is saying that in a deck, cards can change depending on other deck.
   ![deck_card_deck relation](img_deck%20and%20card%20relation.jpg)

@@ -7,8 +7,11 @@ class Card():
         self.message: str = message
         self.proba: float = probability
     
-    def __repr__(self) -> str:
+    def __dict__(self) -> dict:
         return {"Name":self.name, "Hash":self.hash, "Message":self.message, "Proba":self.proba}
+    
+    def __repr__(self) -> str:
+        return str({"Name":self.name, "Hash":self.hash, "Message":self.message, "Proba":self.proba})
 
     def __str__(self) -> str:
         namm = formatedString(f"{self.name} ({self.proba:.2f}%)")

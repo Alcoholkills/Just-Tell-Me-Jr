@@ -71,6 +71,9 @@ class Deck:
 
     def draw(self) -> Card:
         """Draws a card from the deck"""
+        if not self.deck:
+            print("There is no card saved yet.")
+            return None
         if not self.drawingDeck:
             self.drawingDeck = self.deck[:]
         tempList: list[float] = [c.proba for c in self.drawingDeck]
@@ -83,21 +86,22 @@ class Deck:
         return self.drawingDeck.pop()
 
     def __repr__(self) -> str:
+        # TODO Add "" when saving dicts
         namm = f"[[{self.name}]]\n"
         hass = f"Hash={self.hash}\n"
         sizz = f"Size={self.size}\n"
         decc = "[Deck]\n"
         for crd in self.deck:
-            decc += str(crd.__repr__()) + "\n"
+            decc += '"' + str(crd.__repr__()) + '"\n'
         drww = "[DrawingDeck]\n"
         for crd in self.drawingDeck:
-            drww += str(crd.__repr__()) + "\n"
+            drww += '"' + str(crd.__repr__()) + '"\n'
         isPr = "[isParent]\n"
         for crd in self.isParent:
-            isPr += str(crd.__repr__()) + "\n"
+            isPr += '"' + str(crd.__repr__()) + '"\n'
         isCh = "[isChild]\n"
         for crd in self.isChild:
-            isCh += str(crd.__repr__()) + "\n"
+            isCh += '"' + str(crd.__repr__()) + '"\n'
         return namm + hass + sizz + decc + drww + isPr + isCh
         
         

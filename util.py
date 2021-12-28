@@ -34,9 +34,11 @@ def tableString(array: list, firstColName: str = "Index", secColName: str = "Nam
     table = div
     table += formatedString(firstColName, firstSpace)[:-2] + formatedString(secColName, secondSpace)
     table += div
-    for index, item in enumerate(array):
-        table += formatedString(str(index), firstSpace)[:-2] + formatedString(item, secondSpace)
-    return table + div
+    if array:
+        for index, item in enumerate(array):
+            table += formatedString(str(index), firstSpace)[:-2] + formatedString(item, secondSpace)
+        return table + div
+    return ""
 
 if __name__ == "__main__":
     print(formatedString("This is a title"))

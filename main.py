@@ -1,5 +1,7 @@
 import json
 import re
+import time
+from typing import Any
 from util import boxString
 from util import tableString
 from deck import Deck
@@ -27,6 +29,9 @@ def createNewDeck(hashList: list[int]) -> Deck:
 
 def selectDeck(listDeck: list[Deck], show: bool = True) -> Deck:
     """Prints all the decks in table format and returns a deck given by user's input"""
+    if not listDeck:
+        print("There is no deck saved yet.")
+        return None
     if show:
         viewDecks(listDeck)
     try:
@@ -41,11 +46,18 @@ def selectDeck(listDeck: list[Deck], show: bool = True) -> Deck:
 
 def viewDecks(listDeck: list[Deck]) -> None:
     """Prints a table of all the deck ; index and deck name"""
-    print(tableString(listDeck))
+    if not listDeck:
+        print("There is no deck saved yet.")
+        return
+    print("View Decks:")
+    print(tableString([deck.name for deck in listDeck])[:-1])
 
 
 def removeDeck(deckList: list[Deck], show=True) -> bool:
     """`removeDeck` shows the deck list and removes a deck from the list by the input of the user"""
+    if not deckList:
+        print("There is no deck saved yet.")
+        return None
     if show:
         viewDecks(deckList)
     n = input("<> Enter a deck index: ")
@@ -79,24 +91,69 @@ def loadDecks() -> list[Deck]:
     leverDraw: bool = False
     leverParent: bool = False
     leverChild: bool = False
-    deckList: list[Card] = list()
+    tempDeckList = list()
     drawList: list[Card] = list()
     parentList: list = list()
-    childList: list = list()
+    childList: list = list()    
+    
     with open("saveDecks.sav", "r") as file:
         while True:
             line = file.readline()
             if not line:
+                # TODO Cleanup this shit
+                leverChild = False
+                tempDeck = Deck(namm)
+                tempDeck.setDeck(
+                    [
+                        Card(
+                            name=dic["Name"],
+                            message=dic["Message"],
+                            probability=dic["Proba"],
+                        )
+                        for dic in tempDeckList
+                    ]
+                )
+                tempDeck.setDrawingDeck(
+                    [
+                        Card(
+                            name=dic["Name"],
+                            message=dic["Message"],
+                            probability=dic["Proba"],
+                        )
+                        for dic in drawList
+                    ]
+                )
+                tempDeck.setIsParent(
+                    [
+                        Card(
+                            name=dic["Name"],
+                            message=dic["Message"],
+                            probability=dic["Proba"],
+                        )
+                        for dic in parentList
+                    ]
+                )
+                tempDeck.setIsParent(
+                    [
+                        Card(
+                            name=dic["Name"],
+                            message=dic["Message"],
+                            probability=dic["Proba"],
+                        )
+                        for dic in childList
+                    ]
+                )
+                returnedDeckList.append(tempDeck)
                 break
             if re.match(r"^\[\[.+\]\]$", line):
-                namm = line[2:-2]
+                namm = line[2:-3]
                 continue
-            if re.match(r"^Hash=", line):
-                hass = int(line[5:])
-                continue
-            if re.match(r"^Size=", line):
-                sizz = int(line[5:])
-                continue
+            # if re.match(r"^Hash=", line):
+            #     hass = int(line[5:-1])
+            #     continue
+            # if re.match(r"^Size=", line):
+            #     sizz = int(line[5:-1])
+            #     continue
             if "[Deck]\n" == line:
                 leverDeck = True
                 continue
@@ -122,7 +179,7 @@ def loadDecks() -> list[Deck]:
                             message=dic["Message"],
                             probability=dic["Proba"],
                         )
-                        for dic in deckList
+                        for dic in tempDeckList
                     ]
                 )
                 tempDeck.setDrawingDeck(
@@ -158,25 +215,32 @@ def loadDecks() -> list[Deck]:
                 returnedDeckList.append(tempDeck)
                 continue
             if leverDeck:
-                deckList.append(json.loads(line))
+                temp = line[:-1]
+                temp2 = json.loads(temp)
+                tempDeckList.append(json.loads(temp))
                 continue
             if leverDraw:
-                drawList.append(json.loads(line))
+                drawList.append(json.loads(line[:-1]))
                 continue
             if leverParent:
-                parentList.append(json.loads(line))
+                parentList.append(json.loads(line[-1]))
                 continue
             if leverChild:
-                childList.append(json.loads(line))
+                childList.append(json.loads(line[-1]))
+                continue
+    return returnedDeckList
 
 
 # [CARD SECTION]
 def removeCard(deck: Deck, show=True) -> bool:
     """Prints all the cards in the given deck and removes one given user's input"""
+    if not deck.deck:
+        print("There is no card saved yet.")
+        return None
     if show:
         viewCards(deck)
     try:
-        i = int(input("<> Enter a card index"))
+        i = int(input("<> Enter a card index: "))
     except ValueError:
         i = -1
     if i not in range(0, len(deck.deck)):
@@ -187,6 +251,9 @@ def removeCard(deck: Deck, show=True) -> bool:
 
 def viewCards(deck: Deck) -> None:
     """Prints all the cards contained in the given deck"""
+    if not deck.deck:
+        print("There is no card saved yet.")
+        return None
     for index, card in enumerate(deck.deck):
         print(boxString(f"Card number: {index}")[:-1])
         print(card)
@@ -194,7 +261,10 @@ def viewCards(deck: Deck) -> None:
 
 def viewCardMinimalist(deck: Deck) -> None:
     """Prints a table containing all cards in the given deck, in a minimalist way ; with card's name only"""
-    print(tableString(deck.deck))
+    if not deck.deck:
+        print("There is no card saved yet.")
+        return None
+    print(tableString([card.name for card in deck.deck]))
 
 
 def createNewCard(deck: Deck) -> bool:
@@ -216,6 +286,7 @@ def main():
         "Select Deck": 1,
         "Add Deck": 2,
         "Remove Deck": 3,
+        "Quit":4,
     }
     cardOption: dict[str, int] = {
         "Draw": 0,
@@ -226,11 +297,15 @@ def main():
         "Back": 5,
     }
     deckList: list[Deck] = loadDecks()
-    hashDeckList: list[int] = [deck.hash for deck in deckList]
+    hashDeckList: list[int] = list()
+    if deckList:
+        hashDeckList = [deck.hash for deck in deckList]
+        
 
     def selection(array: list[str], word: str, show=True) -> int:
         if show:
-            print(tableString(array, secColName="Option"))
+            # print(f"<{'~'*33}>")
+            print(tableString(array, secColName="Option")[:-1])
         try:
             i = int(input("<> Enter an option index: "))
         except ValueError:
@@ -240,47 +315,66 @@ def main():
             selection(array, word, False)
         return i
 
-    def deckState():
+    def deckState(deckList: list[Deck], hashDeckList: list[int]):
         while True:
             userDeckChoice: int = selection(array=list(deckOption.keys()), word="deck")
             if userDeckChoice == 0:
                 viewDecks(deckList)
             elif userDeckChoice == 1:
-                cardState(selectDeck(deckList))
+                selectedDeck: Deck = selectDeck(deckList)
+                if selectedDeck is not None:
+                    cardState(selectedDeck, deckList)
+                    continue
             elif userDeckChoice == 2:
                 tempDeck = createNewDeck(hashDeckList)
                 if tempDeck is not None:
                     deckList.append(tempDeck)
                     hashDeckList = [deck.hash for deck in deckList]
+                saveDecks(deckList)
             elif userDeckChoice == 3:
                 if removeDeck(deckList):
                     hashDeckList = [deck.hash for deck in deckList]
+                saveDecks(deckList)
+            elif userDeckChoice == 4:
+                raise KeyboardInterrupt
             else:
                 continue
+            input("<> Press Enter to continue.")
 
-    def cardState(deck: Deck) -> None:
+    def cardState(deck: Deck, deckList: list[Deck]) -> None:
         while True:
             userCardChoice: int = selection(array=list(cardOption.keys()), word="card")
             if userCardChoice == 0:
-                print(deck.draw())
+                temp = deck.draw()
+                if temp is not None:
+                    print(temp)
+                continue
             elif userCardChoice == 1:
                 viewCards(deck)
             elif userCardChoice == 2:
                 viewCardMinimalist(deck)
             elif userCardChoice == 3:
                 createNewCard(deck)
+                saveDecks(deckList)
+                continue
             elif userCardChoice == 4:
                 removeCard(deck)
+                saveDecks(deckList)
+                continue
             elif userCardChoice == 5:
                 return
             else:
                 continue
+            input("<> Press Enter to continue.")
 
     try:
-        deckState()
+        deckState(deckList, hashDeckList)
     except KeyboardInterrupt:
-        saveDecks(deckList)
+        exit()
 
 
 if __name__ == "__main__":
     main()
+    # with open("saveDecks.sav","r") as f:
+    #     for l in f.readlines():
+    #         print(l)
