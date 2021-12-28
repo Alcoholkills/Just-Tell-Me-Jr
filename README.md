@@ -9,12 +9,13 @@ Make it accessible with cli
 
 ## Roadmap
 
-- [ ] Being able to create decks
-- [ ] Being able to create cards
+- [x] Being able to create decks
+- [x] Being able to create cards
 - [ ] Being able to generate a deck from the terminal
 - [ ] Find an intresting way to link between the recursive aspect
   - An intresting way of doing is saying that in a deck, cards can change depending on other deck.
   ![deck_card_deck relation](img_deck%20and%20card%20relation.jpg)
+- [ ] Use sys argv to create or fetch or use a function directly
 - [ ] Look at poetry
 - [ ] Look at [Virtual Env](https://docs.python-guide.org/dev/virtualenvs/)
 

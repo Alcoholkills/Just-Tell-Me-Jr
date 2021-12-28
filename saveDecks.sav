@@ -1,0 +1,12 @@
+[[Fire]]
+Hash=-1317566714562807099
+Size=3
+[Deck]
+{'Name': 'Domir', 'Hash': -7113189950129099484, 'Message': 'La il commence a etre vraiment tard', 'Proba': 1}
+{'Name': 'Jouer a SkullGirls', 'Hash': -5320315566193210845, 'Message': "Mais c'est vrai que t'as pas joue aujourd'hui", 'Proba': 1}
+{'Name': 'Faire du sport', 'Hash': -2416146658132361177, 'Message': "C'est OK ;)", 'Proba': 1}
+[DrawingDeck]
+{'Name': 'Domir', 'Hash': -7113189950129099484, 'Message': 'La il commence a etre vraiment tard', 'Proba': 1}
+{'Name': 'Jouer a SkullGirls', 'Hash': -5320315566193210845, 'Message': "Mais c'est vrai que t'as pas joue aujourd'hui", 'Proba': 1}
+[isParent]
+[isChild]

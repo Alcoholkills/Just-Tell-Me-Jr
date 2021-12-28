@@ -3,12 +3,12 @@ from util import formatedString
 class Card():
     def __init__(self, name: str, message: str = "", probability: float = 1) -> None:
         self.name: str = name
-        self.hash: int = hash(name)
+        self.hash: int = hash(name.lower() + message.lower())
         self.message: str = message
         self.proba: float = probability
     
     def __repr__(self) -> str:
-        return {"Name":self.name, "Hash":self.hash, "Message":self.message}
+        return {"Name":self.name, "Hash":self.hash, "Message":self.message, "Proba":self.proba}
 
     def __str__(self) -> str:
         namm = formatedString(f"{self.name} ({self.proba:.2f}%)")
